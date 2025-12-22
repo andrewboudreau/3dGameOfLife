@@ -36,8 +36,7 @@ python -m http.server -d web
 
 ### Option 2: .NET Server
 ```bash
-cd server
-dotnet run -- --path=../web
+dotnet run -- --path=web
 ```
 
 ## Project Structure
@@ -53,8 +52,9 @@ dotnet run -- --path=../web
 │   │   ├── ui.js           # Control panel
 │   │   └── ruleEditor.js   # Visual rule editor
 │   └── rules/              # Rule presets (JSON)
-├── server/                 # .NET static file server
-└── Scripts/                # Original Unity scripts
+├── Program.cs              # .NET static file server
+├── server.csproj
+└── unity3d/                # Original Unity project
 ```
 
 ## Rule Format
