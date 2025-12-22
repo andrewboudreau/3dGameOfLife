@@ -1,0 +1,7 @@
+{
+    "name": "Conway Classic 3D",
+    "description": "Traditional 2D rules adapted to 3D - tends toward extinction or explosion",
+    "adaptive": false,
+    "survive": [5, 7],
+    "birth": 6
+}

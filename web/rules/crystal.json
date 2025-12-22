@@ -1,0 +1,7 @@
+{
+    "name": "Crystal Growth",
+    "description": "Slow, structured growth patterns resembling crystal formation",
+    "adaptive": false,
+    "survive": [4, 6],
+    "birth": 5
+}

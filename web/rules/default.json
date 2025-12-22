@@ -1,0 +1,10 @@
+{
+    "name": "Default Adaptive",
+    "description": "Original growth/decay/stable phases with population-based state transitions",
+    "adaptive": true,
+    "states": {
+        "growth": { "survive": [3, 15], "birth": 9 },
+        "decay": { "survive": [7, 13], "birth": 12 },
+        "stable": { "survive": [4, 14], "birth": 11 }
+    }
+}

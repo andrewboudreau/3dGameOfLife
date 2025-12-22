@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Game of Life</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <div id="controls" class="control-panel">
+        <h2>3D Game of Life</h2>
+
+        <div class="control-group">
+            <label for="speedSlider">Speed: <span id="speedValue">10</span> steps/sec</label>
+            <input type="range" id="speedSlider" min="1" max="60" value="10">
+        </div>
+
+        <div class="control-group">
+            <label for="gridSize">Grid Size: <span id="gridSizeValue">40</span></label>
+            <input type="range" id="gridSize" min="20" max="80" value="40">
+        </div>
+
+        <div class="control-group">
+            <label for="spawnRadius">Spawn Radius: <span id="spawnRadiusValue">5</span></label>
+            <input type="range" id="spawnRadius" min="2" max="20" value="5">
+        </div>
+
+        <div class="control-group">
+            <label for="rulesSelect">Rules:</label>
+            <select id="rulesSelect">
+                <option value="default">Default Adaptive</option>
+                <option value="conway-classic">Conway Classic 3D</option>
+                <option value="crystal">Crystal Growth</option>
+            </select>
+        </div>
+
+        <div class="control-group checkbox-group">
+            <label>
+                <input type="checkbox" id="autoOrbit" checked>
+                Auto-Orbit Camera
+            </label>
+        </div>
+
+        <div class="control-group checkbox-group">
+            <label>
+                <input type="checkbox" id="pauseSimulation">
+                Pause
+            </label>
+        </div>
+
+        <button id="resetBtn" class="btn">Reset (R)</button>
+
+        <div class="shortcuts">
+            <h3>Shortcuts</h3>
+            <ul>
+                <li><kbd>H</kbd> Hide/Show Controls</li>
+                <li><kbd>Space</kbd> Pause/Resume</li>
+                <li><kbd>R</kbd> Reset</li>
+                <li><kbd>O</kbd> Toggle Auto-Orbit</li>
+                <li><kbd>+/-</kbd> Adjust Speed</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="stats" class="stats-overlay">
+        <div>Population: <span id="populationCount">0</span></div>
+        <div>State: <span id="growthState">Growth</span></div>
+        <div>FPS: <span id="fpsCounter">0</span></div>
+    </div>
+
+    <div id="ruleEditor" class="rule-editor hidden">
+        <div class="rule-editor-header">
+            <h2>Rule Editor</h2>
+            <button id="closeRuleEditor" class="close-btn">&times;</button>
+        </div>
+
+        <div class="rule-section">
+            <label for="presetSelect">Preset:</label>
+            <select id="presetSelect">
+                <option value="default">Default Adaptive</option>
+                <option value="conway-classic">Conway Classic 3D</option>
+                <option value="crystal">Crystal Growth</option>
+                <option value="custom">Custom</option>
+            </select>
+        </div>
+
+        <div class="rule-section">
+            <div class="section-title">Survival</div>
+            <div class="range-control">
+                <label>Min: <span id="surviveMinValue">4</span></label>
+                <input type="range" id="surviveMin" min="0" max="26" value="4">
+            </div>
+            <div class="range-control">
+                <label>Max: <span id="surviveMaxValue">14</span></label>
+                <input type="range" id="surviveMax" min="0" max="26" value="14">
+            </div>
+            <div class="bar-chart" id="survivalChart"></div>
+        </div>
+
+        <div class="rule-section">
+            <div class="section-title">Birth</div>
+            <div class="range-control">
+                <label>Threshold: <span id="birthThresholdValue">11</span></label>
+                <input type="range" id="birthThreshold" min="0" max="26" value="11">
+            </div>
+            <div class="bar-chart" id="birthChart"></div>
+        </div>
+
+        <div class="rule-section">
+            <div class="checkbox-control">
+                <label>
+                    <input type="checkbox" id="adaptiveMode" checked>
+                    Adaptive Mode
+                </label>
+            </div>
+            <div id="stateTabs" class="state-tabs">
+                <button class="state-tab active" data-state="growth">Growth</button>
+                <button class="state-tab" data-state="decay">Decay</button>
+                <button class="state-tab" data-state="stable">Stable</button>
+            </div>
+        </div>
+
+        <div class="rule-section">
+            <div class="section-title">Preview</div>
+            <canvas id="previewCanvas" width="200" height="200"></canvas>
+            <div class="preview-stats">
+                <span>Pop: <span id="previewPop">0</span></span>
+                <span>Gen: <span id="previewGen">0</span></span>
+            </div>
+        </div>
+
+        <button id="applyRules" class="btn">Apply Rules</button>
+    </div>
+
+    <button id="toggleControls" class="toggle-btn">H</button>
+    <button id="toggleRuleEditor" class="toggle-btn rule-editor-btn">R</button>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
