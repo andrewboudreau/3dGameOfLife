@@ -2,9 +2,7 @@
 
 A 3D implementation of Conway's Game of Life using WebGL (Babylon.js).
 
-**[Live Demo](https://yourusername.github.io/3dGameOfLife/)** *(update after deploying)*
-
-![3D Game of Life Screenshot](screenshot.png)
+**[Live Demo](https://andrewboudreau.github.io/3dGameOfLife/)**
 
 ## Features
 
