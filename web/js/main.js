@@ -55,8 +55,12 @@ class GameOfLife3D {
                 this.renderer.setCellScale(scale);
                 this.needsRenderUpdate = true;
             },
-            onCellAlphaChange: (alpha) => {
-                this.renderer.setCellAlpha(alpha);
+            onNearAlphaChange: (alpha) => {
+                this.renderer.setNearAlpha(alpha);
+                this.needsRenderUpdate = true;
+            },
+            onFarAlphaChange: (alpha) => {
+                this.renderer.setFarAlpha(alpha);
                 this.needsRenderUpdate = true;
             },
             onSliceModeChange: (enabled) => {
@@ -95,6 +99,9 @@ class GameOfLife3D {
         // Update camera auto-orbit (always runs for smooth rotation)
         this.cameraController.update(deltaTime);
 
+        // Update camera position for distance-based transparency
+        this.renderer.updateCameraPosition();
+
         // Run simulation step based on speed setting
         const stepInterval = 1000 / this.stepsPerSecond;
         if (!this.paused && now - this.lastStepTime >= stepInterval) {
@@ -103,8 +110,9 @@ class GameOfLife3D {
             this.lastStepTime = now;
         }
 
-        // Only update renderer when simulation changed
-        if (this.needsRenderUpdate) {
+        // Update renderer when simulation changed or camera moved (for distance-based alpha)
+        const usingTransparency = this.renderer.nearAlpha < 1.0 || this.renderer.farAlpha < 1.0;
+        if (this.needsRenderUpdate || usingTransparency) {
             this.updateCells();
             this.needsRenderUpdate = false;
         }

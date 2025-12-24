@@ -18,10 +18,12 @@ export class Renderer {
 
         // Visibility settings
         this.cellScale = 0.9;      // 0.1 to 1.0
-        this.cellAlpha = 1.0;      // 0.1 to 1.0
+        this.nearAlpha = 1.0;      // Alpha for cells closest to camera
+        this.farAlpha = 1.0;       // Alpha for cells farthest from camera
         this.sliceEnabled = false;
         this.sliceLayer = 0;       // Current Z layer to show
         this.sliceThickness = 1;   // How many layers to show
+        this.cameraPosition = { x: 0, y: 0, z: 0 };
 
         this.initScene();
         this.initLighting();
@@ -115,6 +117,23 @@ export class Renderer {
         const colors = new Float32Array(count * 4);
 
         const scale = this.cellScale;
+        const camX = this.cameraPosition.x;
+        const camY = this.cameraPosition.y;
+        const camZ = this.cameraPosition.z;
+
+        // Calculate min/max distances for normalization
+        let minDist = Infinity;
+        let maxDist = 0;
+        for (let i = 0; i < count; i++) {
+            const cell = visibleCells[i];
+            const dx = cell.x - camX;
+            const dy = cell.y - camY;
+            const dz = cell.z - camZ;
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (dist < minDist) minDist = dist;
+            if (dist > maxDist) maxDist = dist;
+        }
+        const distRange = maxDist - minDist || 1;
 
         // Fill buffers
         for (let i = 0; i < count; i++) {
@@ -140,16 +159,34 @@ export class Renderer {
             matrices[matOffset + 14] = cell.z;
             matrices[matOffset + 15] = 1;
 
-            // Color based on position with alpha
+            // Calculate distance-based alpha
+            const dx = cell.x - camX;
+            const dy = cell.y - camY;
+            const dz = cell.z - camZ;
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            const t = (dist - minDist) / distRange; // 0 = near, 1 = far
+            const alpha = this.nearAlpha + (this.farAlpha - this.nearAlpha) * t;
+
+            // Color based on position with distance-based alpha
             colors[colOffset + 0] = 0.25 + 0.75 * (cell.x / gridSize);
             colors[colOffset + 1] = 0.25 + 0.75 * (cell.y / gridSize);
             colors[colOffset + 2] = 0.25 + 0.75 * (cell.z / gridSize);
-            colors[colOffset + 3] = this.cellAlpha;
+            colors[colOffset + 3] = alpha;
         }
 
         // Set buffers - passing true to mark as static (will be replaced next frame anyway)
         this.cube.thinInstanceSetBuffer('matrix', matrices, 16, true);
         this.cube.thinInstanceSetBuffer('color', colors, 4, true);
+
+        // Update material transparency mode based on whether any transparency is used
+        const needsTransparency = this.nearAlpha < 1.0 || this.farAlpha < 1.0;
+        if (needsTransparency) {
+            this.cube.material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
+            this.cube.material.needDepthPrePass = true;
+        } else {
+            this.cube.material.transparencyMode = BABYLON.Material.MATERIAL_OPAQUE;
+            this.cube.material.needDepthPrePass = false;
+        }
 
         this.cube.isVisible = true;
     }
@@ -175,20 +212,19 @@ export class Renderer {
         this.cellScale = Math.max(0.1, Math.min(1.0, scale));
     }
 
-    setCellAlpha(alpha) {
-        this.cellAlpha = Math.max(0.1, Math.min(1.0, alpha));
-        // Toggle transparency mode based on alpha
-        if (this.cube && this.cube.material) {
-            this.cube.material.alpha = alpha;
-            if (alpha >= 1.0) {
-                // Opaque mode - no transparency issues
-                this.cube.material.transparencyMode = BABYLON.Material.MATERIAL_OPAQUE;
-                this.cube.material.needDepthPrePass = false;
-            } else {
-                // Transparent mode with depth pre-pass
-                this.cube.material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
-                this.cube.material.needDepthPrePass = true;
-            }
+    setNearAlpha(alpha) {
+        this.nearAlpha = Math.max(0.0, Math.min(1.0, alpha));
+    }
+
+    setFarAlpha(alpha) {
+        this.farAlpha = Math.max(0.0, Math.min(1.0, alpha));
+    }
+
+    updateCameraPosition() {
+        if (this.camera) {
+            this.cameraPosition.x = this.camera.position.x;
+            this.cameraPosition.y = this.camera.position.y;
+            this.cameraPosition.z = this.camera.position.z;
         }
     }
 

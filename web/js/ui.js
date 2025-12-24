@@ -13,7 +13,8 @@ export class UIController {
         this.onPauseChange = options.onPauseChange || (() => {});
         this.onReset = options.onReset || (() => {});
         this.onCellSizeChange = options.onCellSizeChange || (() => {});
-        this.onCellAlphaChange = options.onCellAlphaChange || (() => {});
+        this.onNearAlphaChange = options.onNearAlphaChange || (() => {});
+        this.onFarAlphaChange = options.onFarAlphaChange || (() => {});
         this.onSliceModeChange = options.onSliceModeChange || (() => {});
         this.onSliceLayerChange = options.onSliceLayerChange || (() => {});
         this.onSliceThicknessChange = options.onSliceThicknessChange || (() => {});
@@ -55,8 +56,10 @@ export class UIController {
         // View settings
         this.cellSizeSlider = document.getElementById('cellSize');
         this.cellSizeValue = document.getElementById('cellSizeValue');
-        this.cellAlphaSlider = document.getElementById('cellAlpha');
-        this.cellAlphaValue = document.getElementById('cellAlphaValue');
+        this.nearAlphaSlider = document.getElementById('nearAlpha');
+        this.nearAlphaValue = document.getElementById('nearAlphaValue');
+        this.farAlphaSlider = document.getElementById('farAlpha');
+        this.farAlphaValue = document.getElementById('farAlphaValue');
         this.sliceModeCheckbox = document.getElementById('sliceMode');
         this.sliceControls = document.getElementById('sliceControls');
         this.sliceLayerSlider = document.getElementById('sliceLayer');
@@ -122,11 +125,18 @@ export class UIController {
             this.onCellSizeChange(value / 100);
         });
 
-        // Cell alpha slider
-        this.cellAlphaSlider.addEventListener('input', (e) => {
+        // Near alpha slider
+        this.nearAlphaSlider.addEventListener('input', (e) => {
             const value = parseInt(e.target.value);
-            this.cellAlphaValue.textContent = value;
-            this.onCellAlphaChange(value / 100);
+            this.nearAlphaValue.textContent = value;
+            this.onNearAlphaChange(value / 100);
+        });
+
+        // Far alpha slider
+        this.farAlphaSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            this.farAlphaValue.textContent = value;
+            this.onFarAlphaChange(value / 100);
         });
 
         // Slice mode checkbox

@@ -7,14 +7,20 @@
 export class SimulationGrid {
     constructor(ruleEngine, size = 50) {
         this.ruleEngine = ruleEngine;
+        this.padding = 2; // Extra cells on each side for proper neighbor counting
         this.resize(size);
     }
 
     resize(size) {
-        this.xMax = size;
-        this.yMax = size;
-        this.zMax = size;
-        this.maxIndex = size * size * size;
+        // Visible size (what gets rendered)
+        this.visibleSize = size;
+
+        // Actual simulation size (includes padding)
+        const simSize = size + this.padding * 2;
+        this.xMax = simSize;
+        this.yMax = simSize;
+        this.zMax = simSize;
+        this.maxIndex = simSize * simSize * simSize;
 
         // Typed arrays for performance - visibility and neighbor counts
         this.visibility = new Uint8Array(this.maxIndex);
@@ -72,9 +78,10 @@ export class SimulationGrid {
         this.growthState = 1;
         this.totalCount = 0;
 
-        const midX = Math.floor(this.xMax / 2);
-        const midY = Math.floor(this.yMax / 2);
-        const midZ = Math.floor(this.zMax / 2);
+        // Center is in the middle of the visible region (offset by padding)
+        const midX = this.padding + Math.floor(this.visibleSize / 2);
+        const midY = this.padding + Math.floor(this.visibleSize / 2);
+        const midZ = this.padding + Math.floor(this.visibleSize / 2);
 
         // Seed cells within spherical region
         for (let x = 0; x < this.xMax; x++) {
@@ -97,15 +104,17 @@ export class SimulationGrid {
     }
 
     /**
-     * Thresholds for state transitions based on grid volume.
+     * Thresholds for state transitions based on visible grid volume.
      * Decay kicks in at high population, growth at low.
      */
     get decayUpperLimit() {
-        return Math.floor(this.maxIndex / 300);
+        const visibleVolume = this.visibleSize * this.visibleSize * this.visibleSize;
+        return Math.floor(visibleVolume / 300);
     }
 
     get growthLowerLimit() {
-        return Math.floor(this.maxIndex / 2000);
+        const visibleVolume = this.visibleSize * this.visibleSize * this.visibleSize;
+        return Math.floor(visibleVolume / 2000);
     }
 
     /**
@@ -187,8 +196,18 @@ export class SimulationGrid {
     }
 
     /**
+     * Check if coordinates are within the visible region (excluding padding).
+     */
+    isInVisibleRegion(x, y, z) {
+        return x >= this.padding && x < this.padding + this.visibleSize &&
+               y >= this.padding && y < this.padding + this.visibleSize &&
+               z >= this.padding && z < this.padding + this.visibleSize;
+    }
+
+    /**
      * Get all visible cell positions for rendering.
-     * Reuses objects to reduce GC pressure.
+     * Only returns cells within the visible region (not padding).
+     * Coordinates are adjusted to be 0-based within visible region.
      */
     getVisibleCells() {
         // Reuse or create cell objects array
@@ -197,33 +216,40 @@ export class SimulationGrid {
         }
 
         const cells = this._cellObjects;
-        const count = this.visibleCells.length;
+        let outputIndex = 0;
 
-        // Ensure array is large enough
-        while (cells.length < count) {
-            cells.push({ x: 0, y: 0, z: 0, index: 0 });
-        }
-
-        // Update cell objects
-        for (let i = 0; i < count; i++) {
+        // Filter to only cells in visible region
+        for (let i = 0; i < this.visibleCells.length; i++) {
             const index = this.visibleCells[i];
-            const cell = cells[i];
             const coords = this.getCoords(index);
-            cell.x = coords.x;
-            cell.y = coords.y;
-            cell.z = coords.z;
-            cell.index = index;
+
+            // Only include cells within visible bounds
+            if (this.isInVisibleRegion(coords.x, coords.y, coords.z)) {
+                // Ensure array is large enough
+                if (outputIndex >= cells.length) {
+                    cells.push({ x: 0, y: 0, z: 0, index: 0 });
+                }
+
+                const cell = cells[outputIndex];
+                // Adjust coordinates to be 0-based within visible region
+                cell.x = coords.x - this.padding;
+                cell.y = coords.y - this.padding;
+                cell.z = coords.z - this.padding;
+                cell.index = index;
+                outputIndex++;
+            }
         }
 
-        // Return slice of active cells
-        return cells.slice(0, count);
+        // Return slice of active visible cells
+        return cells.slice(0, outputIndex);
     }
 
     getCenter() {
+        // Return center of visible region (0-based coordinates)
         return {
-            x: this.xMax / 2,
-            y: this.yMax / 2,
-            z: this.zMax / 2
+            x: this.visibleSize / 2,
+            y: this.visibleSize / 2,
+            z: this.visibleSize / 2
         };
     }
 
