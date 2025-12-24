@@ -54,6 +54,32 @@
 
         <button id="resetBtn" class="btn">Reset (R)</button>
 
+        <h3 style="margin-top: 15px; margin-bottom: 10px;">View Settings</h3>
+
+        <div class="control-group">
+            <label for="cellSize">Cell Size: <span id="cellSizeValue">90</span>%</label>
+            <input type="range" id="cellSize" min="10" max="100" value="90">
+        </div>
+
+        <div class="control-group">
+            <label for="cellAlpha">Transparency: <span id="cellAlphaValue">100</span>%</label>
+            <input type="range" id="cellAlpha" min="10" max="100" value="100">
+        </div>
+
+        <div class="control-group checkbox-group">
+            <label>
+                <input type="checkbox" id="sliceMode">
+                Layer Slice Mode
+            </label>
+        </div>
+
+        <div id="sliceControls" class="control-group" style="display: none;">
+            <label for="sliceLayer">Layer: <span id="sliceLayerValue">0</span></label>
+            <input type="range" id="sliceLayer" min="0" max="39" value="0">
+            <label for="sliceThickness">Thickness: <span id="sliceThicknessValue">1</span></label>
+            <input type="range" id="sliceThickness" min="1" max="10" value="1">
+        </div>
+
         <div class="shortcuts">
             <h3>Shortcuts</h3>
             <ul>
@@ -61,7 +87,8 @@
                 <li><kbd>Space</kbd> Pause/Resume</li>
                 <li><kbd>R</kbd> Reset</li>
                 <li><kbd>O</kbd> Toggle Auto-Orbit</li>
-                <li><kbd>+/-</kbd> Adjust Speed</li>
+                <li><kbd>L</kbd> Toggle Slice Mode</li>
+                <li><kbd>[/]</kbd> Navigate Layers</li>
             </ul>
         </div>
     </div>

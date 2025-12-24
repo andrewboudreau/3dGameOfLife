@@ -12,9 +12,15 @@ export class UIController {
         this.onAutoOrbitChange = options.onAutoOrbitChange || (() => {});
         this.onPauseChange = options.onPauseChange || (() => {});
         this.onReset = options.onReset || (() => {});
+        this.onCellSizeChange = options.onCellSizeChange || (() => {});
+        this.onCellAlphaChange = options.onCellAlphaChange || (() => {});
+        this.onSliceModeChange = options.onSliceModeChange || (() => {});
+        this.onSliceLayerChange = options.onSliceLayerChange || (() => {});
+        this.onSliceThicknessChange = options.onSliceThicknessChange || (() => {});
 
         this.controlsVisible = true;
         this.paused = false;
+        this.currentGridSize = 40;
 
         this.cacheElements();
         this.bindEvents();
@@ -45,6 +51,18 @@ export class UIController {
         this.growthStateRow = document.getElementById('growthStateRow');
         this.growthState = document.getElementById('growthState');
         this.fpsCounter = document.getElementById('fpsCounter');
+
+        // View settings
+        this.cellSizeSlider = document.getElementById('cellSize');
+        this.cellSizeValue = document.getElementById('cellSizeValue');
+        this.cellAlphaSlider = document.getElementById('cellAlpha');
+        this.cellAlphaValue = document.getElementById('cellAlphaValue');
+        this.sliceModeCheckbox = document.getElementById('sliceMode');
+        this.sliceControls = document.getElementById('sliceControls');
+        this.sliceLayerSlider = document.getElementById('sliceLayer');
+        this.sliceLayerValue = document.getElementById('sliceLayerValue');
+        this.sliceThicknessSlider = document.getElementById('sliceThickness');
+        this.sliceThicknessValue = document.getElementById('sliceThicknessValue');
     }
 
     bindEvents() {
@@ -96,6 +114,41 @@ export class UIController {
 
         // Toggle controls button
         this.toggleBtn.addEventListener('click', () => this.toggleControls());
+
+        // Cell size slider
+        this.cellSizeSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            this.cellSizeValue.textContent = value;
+            this.onCellSizeChange(value / 100);
+        });
+
+        // Cell alpha slider
+        this.cellAlphaSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            this.cellAlphaValue.textContent = value;
+            this.onCellAlphaChange(value / 100);
+        });
+
+        // Slice mode checkbox
+        this.sliceModeCheckbox.addEventListener('change', (e) => {
+            const enabled = e.target.checked;
+            this.sliceControls.style.display = enabled ? '' : 'none';
+            this.onSliceModeChange(enabled);
+        });
+
+        // Slice layer slider
+        this.sliceLayerSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            this.sliceLayerValue.textContent = value;
+            this.onSliceLayerChange(value);
+        });
+
+        // Slice thickness slider
+        this.sliceThicknessSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            this.sliceThicknessValue.textContent = value;
+            this.onSliceThicknessChange(value);
+        });
     }
 
     bindKeyboard() {
@@ -117,6 +170,15 @@ export class UIController {
                 case 'o':
                     this.toggleAutoOrbit();
                     break;
+                case 'l':
+                    this.toggleSliceMode();
+                    break;
+                case '[':
+                    this.adjustSliceLayer(-1);
+                    break;
+                case ']':
+                    this.adjustSliceLayer(1);
+                    break;
             }
         });
     }
@@ -136,6 +198,31 @@ export class UIController {
     toggleAutoOrbit() {
         this.autoOrbitCheckbox.checked = !this.autoOrbitCheckbox.checked;
         this.onAutoOrbitChange(this.autoOrbitCheckbox.checked);
+    }
+
+    toggleSliceMode() {
+        this.sliceModeCheckbox.checked = !this.sliceModeCheckbox.checked;
+        this.sliceControls.style.display = this.sliceModeCheckbox.checked ? '' : 'none';
+        this.onSliceModeChange(this.sliceModeCheckbox.checked);
+    }
+
+    adjustSliceLayer(delta) {
+        if (!this.sliceModeCheckbox.checked) return;
+        const maxLayer = this.currentGridSize - 1;
+        const newValue = Math.max(0, Math.min(maxLayer, parseInt(this.sliceLayerSlider.value) + delta));
+        this.sliceLayerSlider.value = newValue;
+        this.sliceLayerValue.textContent = newValue;
+        this.onSliceLayerChange(newValue);
+    }
+
+    updateGridSize(size) {
+        this.currentGridSize = size;
+        this.sliceLayerSlider.max = size - 1;
+        if (parseInt(this.sliceLayerSlider.value) >= size) {
+            this.sliceLayerSlider.value = size - 1;
+            this.sliceLayerValue.textContent = size - 1;
+            this.onSliceLayerChange(size - 1);
+        }
     }
 
     updateStats(population, growthState, fps) {

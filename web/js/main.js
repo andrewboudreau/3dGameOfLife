@@ -50,7 +50,27 @@ class GameOfLife3D {
             onRulesChange: (ruleName) => this.setRules(ruleName),
             onAutoOrbitChange: (enabled) => this.cameraController.setAutoOrbit(enabled),
             onPauseChange: (paused) => this.paused = paused,
-            onReset: () => this.reset()
+            onReset: () => this.reset(),
+            onCellSizeChange: (scale) => {
+                this.renderer.setCellScale(scale);
+                this.needsRenderUpdate = true;
+            },
+            onCellAlphaChange: (alpha) => {
+                this.renderer.setCellAlpha(alpha);
+                this.needsRenderUpdate = true;
+            },
+            onSliceModeChange: (enabled) => {
+                this.renderer.setSliceEnabled(enabled);
+                this.needsRenderUpdate = true;
+            },
+            onSliceLayerChange: (layer) => {
+                this.renderer.setSliceLayer(layer);
+                this.needsRenderUpdate = true;
+            },
+            onSliceThicknessChange: (thickness) => {
+                this.renderer.setSliceThickness(thickness);
+                this.needsRenderUpdate = true;
+            }
         });
 
         // Initialize Rule Editor
@@ -114,6 +134,7 @@ class GameOfLife3D {
     setGridSize(size) {
         this.gridSize = size;
         this.simulation.resize(size);
+        this.ui.updateGridSize(size);
         this.reset();
     }
 
