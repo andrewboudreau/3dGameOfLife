@@ -44,9 +44,9 @@ export class Renderer {
             new BABYLON.Vector3(0, 1, 0),
             this.scene
         );
-        ambient.intensity = 0.6;
-        ambient.diffuse = new BABYLON.Color3(1, 1, 1);
-        ambient.groundColor = new BABYLON.Color3(0.2, 0.2, 0.3);
+        ambient.intensity = 0.4;
+        ambient.diffuse = new BABYLON.Color3(1.0, 0.95, 0.9);
+        ambient.groundColor = new BABYLON.Color3(0.15, 0.2, 0.35);
 
         // Key light
         const key = new BABYLON.DirectionalLight(
@@ -54,7 +54,8 @@ export class Renderer {
             new BABYLON.Vector3(-1, -2, -1).normalize(),
             this.scene
         );
-        key.intensity = 0.7;
+        key.intensity = 0.9;
+        key.diffuse = new BABYLON.Color3(1.0, 0.95, 0.85);
 
         // Fill light
         const fill = new BABYLON.DirectionalLight(
@@ -62,7 +63,17 @@ export class Renderer {
             new BABYLON.Vector3(1, 0.5, 1).normalize(),
             this.scene
         );
-        fill.intensity = 0.25;
+        fill.intensity = 0.35;
+        fill.diffuse = new BABYLON.Color3(0.7, 0.85, 1.0);
+
+        // Rim/back light - adds definition to edges
+        const rim = new BABYLON.DirectionalLight(
+            'rim',
+            new BABYLON.Vector3(0.5, 0.3, 1).normalize(),
+            this.scene
+        );
+        rim.intensity = 0.5;
+        rim.diffuse = new BABYLON.Color3(0.9, 0.8, 1.0);
     }
 
     initCube() {
@@ -72,8 +83,8 @@ export class Renderer {
         // Material with vertex colors and transparency support
         const material = new BABYLON.StandardMaterial('cubeMat', this.scene);
         material.diffuseColor = new BABYLON.Color3(1, 1, 1);
-        material.specularColor = new BABYLON.Color3(0.2, 0.2, 0.3);
-        material.specularPower = 16;
+        material.specularColor = new BABYLON.Color3(0.3, 0.3, 0.4);
+        material.specularPower = 32;
         material.backFaceCulling = true;
 
         // Enable transparency with depth pre-pass to fix sorting issues
