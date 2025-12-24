@@ -49,9 +49,15 @@ Both versions share the same algorithm:
 - **Sparse Updates**: Only cells near live regions are processed (`updateList`)
 - **Update Loop**: For each visible cell → increment all 26 neighbors → compile new visible set
 
-### Adaptive Rules System
+### Default Rules (3D Life)
 
-State-dependent survival/birth thresholds with automatic population balancing:
+Simple Conway-esque rules adapted to 3D:
+- **Survival**: 4-5 neighbors (cell stays alive)
+- **Birth**: 5+ neighbors (new cell is born)
+
+### Adaptive Rules (Optional)
+
+Available as the "Adaptive" preset. Uses state-dependent survival/birth thresholds with automatic population balancing:
 
 | State | Survival Range | Birth Threshold |
 |-------|---------------|-----------------|

@@ -6,14 +6,11 @@
 // Built-in rule presets
 const PRESETS = {
     'default': {
-        name: 'Default Adaptive',
-        description: 'Original growth/decay/stable phases with population-based state transitions',
-        adaptive: true,
-        states: {
-            growth:  { survive: [3, 15], birth: 9 },
-            decay:   { survive: [7, 13], birth: 12 },
-            stable:  { survive: [4, 14], birth: 11 }
-        }
+        name: '3D Life',
+        description: 'Simple 3D cellular automaton with balanced survival and birth rules',
+        adaptive: false,
+        survive: [4, 5],   // Survive with 4-5 neighbors
+        birth: 5           // Born with exactly 5 neighbors
     },
     'conway-classic': {
         name: 'Conway Classic 3D',
@@ -28,6 +25,16 @@ const PRESETS = {
         adaptive: false,
         survive: [4, 6],
         birth: 5
+    },
+    'adaptive': {
+        name: 'Adaptive',
+        description: 'Growth/decay/stable phases with population-based state transitions',
+        adaptive: true,
+        states: {
+            growth:  { survive: [3, 15], birth: 9 },
+            decay:   { survive: [7, 13], birth: 12 },
+            stable:  { survive: [4, 14], birth: 11 }
+        }
     }
 };
 

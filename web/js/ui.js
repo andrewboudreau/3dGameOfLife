@@ -42,6 +42,7 @@ export class UIController {
 
         // Stats
         this.populationCount = document.getElementById('populationCount');
+        this.growthStateRow = document.getElementById('growthStateRow');
         this.growthState = document.getElementById('growthState');
         this.fpsCounter = document.getElementById('fpsCounter');
     }
@@ -139,7 +140,12 @@ export class UIController {
 
     updateStats(population, growthState, fps) {
         this.populationCount.textContent = population.toLocaleString();
-        this.growthState.textContent = growthState;
+        if (growthState) {
+            this.growthStateRow.style.display = '';
+            this.growthState.textContent = growthState;
+        } else {
+            this.growthStateRow.style.display = 'none';
+        }
         this.fpsCounter.textContent = fps;
     }
 

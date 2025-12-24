@@ -7,13 +7,13 @@ export class RuleEditor {
         this.onRulesChange = options.onRulesChange || (() => {});
         this.visible = false;
 
-        // Current rule state
-        this.adaptive = true;
+        // Current rule state - default to simple static rules
+        this.adaptive = false;
         this.currentState = 'growth'; // growth, decay, stable
         this.rules = {
-            growth: { survive: [3, 15], birth: 9 },
-            decay: { survive: [7, 13], birth: 12 },
-            stable: { survive: [4, 14], birth: 11 }
+            growth: { survive: [4, 5], birth: 5 },
+            decay: { survive: [4, 5], birth: 5 },
+            stable: { survive: [4, 5], birth: 5 }
         };
 
         // 2D Preview simulation
@@ -177,11 +177,11 @@ export class RuleEditor {
     loadPreset(name) {
         const presets = {
             'default': {
-                adaptive: true,
+                adaptive: false,
                 rules: {
-                    growth: { survive: [3, 15], birth: 9 },
-                    decay: { survive: [7, 13], birth: 12 },
-                    stable: { survive: [4, 14], birth: 11 }
+                    growth: { survive: [4, 5], birth: 5 },
+                    decay: { survive: [4, 5], birth: 5 },
+                    stable: { survive: [4, 5], birth: 5 }
                 }
             },
             'conway-classic': {
@@ -198,6 +198,14 @@ export class RuleEditor {
                     growth: { survive: [4, 6], birth: 5 },
                     decay: { survive: [4, 6], birth: 5 },
                     stable: { survive: [4, 6], birth: 5 }
+                }
+            },
+            'adaptive': {
+                adaptive: true,
+                rules: {
+                    growth: { survive: [3, 15], birth: 9 },
+                    decay: { survive: [7, 13], birth: 12 },
+                    stable: { survive: [4, 14], birth: 11 }
                 }
             }
         };

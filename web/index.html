@@ -31,9 +31,10 @@
         <div class="control-group">
             <label for="rulesSelect">Rules:</label>
             <select id="rulesSelect">
-                <option value="default">Default Adaptive</option>
+                <option value="default">3D Life</option>
                 <option value="conway-classic">Conway Classic 3D</option>
                 <option value="crystal">Crystal Growth</option>
+                <option value="adaptive">Adaptive</option>
             </select>
         </div>
 
@@ -67,7 +68,7 @@
 
     <div id="stats" class="stats-overlay">
         <div>Population: <span id="populationCount">0</span></div>
-        <div>State: <span id="growthState">Growth</span></div>
+        <div id="growthStateRow" style="display: none;">State: <span id="growthState">Growth</span></div>
         <div>FPS: <span id="fpsCounter">0</span></div>
     </div>
 
@@ -80,9 +81,10 @@
         <div class="rule-section">
             <label for="presetSelect">Preset:</label>
             <select id="presetSelect">
-                <option value="default">Default Adaptive</option>
+                <option value="default">3D Life</option>
                 <option value="conway-classic">Conway Classic 3D</option>
                 <option value="crystal">Crystal Growth</option>
+                <option value="adaptive">Adaptive</option>
                 <option value="custom">Custom</option>
             </select>
         </div>
@@ -112,11 +114,11 @@
         <div class="rule-section">
             <div class="checkbox-control">
                 <label>
-                    <input type="checkbox" id="adaptiveMode" checked>
+                    <input type="checkbox" id="adaptiveMode">
                     Adaptive Mode
                 </label>
             </div>
-            <div id="stateTabs" class="state-tabs">
+            <div id="stateTabs" class="state-tabs" style="display: none;">
                 <button class="state-tab active" data-state="growth">Growth</button>
                 <button class="state-tab" data-state="decay">Decay</button>
                 <button class="state-tab" data-state="stable">Stable</button>
