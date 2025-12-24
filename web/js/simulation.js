@@ -112,11 +112,13 @@ export class SimulationGrid {
      * Execute one simulation step.
      */
     step() {
-        // Update growth state based on population thresholds
-        if (this.totalCount > this.decayUpperLimit) {
-            this.growthState = -1; // Decay phase
-        } else if (this.totalCount < this.growthLowerLimit) {
-            this.growthState = 1;  // Growth phase
+        // Update growth state only for adaptive rules
+        if (this.ruleEngine.config.adaptive) {
+            if (this.totalCount > this.decayUpperLimit) {
+                this.growthState = -1; // Decay phase
+            } else if (this.totalCount < this.growthLowerLimit) {
+                this.growthState = 1;  // Growth phase
+            }
         }
 
         // Run rules on all visible cells - increments neighbor counts
@@ -226,8 +228,13 @@ export class SimulationGrid {
     }
 
     getGrowthStateName() {
+        if (!this.ruleEngine.config.adaptive) return null;
         if (this.growthState > 0) return 'Growth';
         if (this.growthState < 0) return 'Decay';
         return 'Stable';
+    }
+
+    isAdaptive() {
+        return this.ruleEngine.config.adaptive;
     }
 }
