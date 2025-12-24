@@ -18,6 +18,7 @@ export class UIController {
         this.onSliceModeChange = options.onSliceModeChange || (() => {});
         this.onSliceLayerChange = options.onSliceLayerChange || (() => {});
         this.onSliceThicknessChange = options.onSliceThicknessChange || (() => {});
+        this.onSoundChange = options.onSoundChange || (() => {});
 
         this.controlsVisible = true;
         this.paused = false;
@@ -45,6 +46,7 @@ export class UIController {
         this.rulesSelect = document.getElementById('rulesSelect');
         this.autoOrbitCheckbox = document.getElementById('autoOrbit');
         this.pauseCheckbox = document.getElementById('pauseSimulation');
+        this.soundCheckbox = document.getElementById('soundEnabled');
         this.resetBtn = document.getElementById('resetBtn');
 
         // Stats
@@ -110,6 +112,11 @@ export class UIController {
         this.pauseCheckbox.addEventListener('change', (e) => {
             this.paused = e.target.checked;
             this.onPauseChange(this.paused);
+        });
+
+        // Sound checkbox
+        this.soundCheckbox.addEventListener('change', (e) => {
+            this.onSoundChange(e.target.checked);
         });
 
         // Reset button
@@ -180,6 +187,9 @@ export class UIController {
                 case 'o':
                     this.toggleAutoOrbit();
                     break;
+                case 'm':
+                    this.toggleSound();
+                    break;
                 case 'l':
                     this.toggleSliceMode();
                     break;
@@ -208,6 +218,11 @@ export class UIController {
     toggleAutoOrbit() {
         this.autoOrbitCheckbox.checked = !this.autoOrbitCheckbox.checked;
         this.onAutoOrbitChange(this.autoOrbitCheckbox.checked);
+    }
+
+    toggleSound() {
+        this.soundCheckbox.checked = !this.soundCheckbox.checked;
+        this.onSoundChange(this.soundCheckbox.checked);
     }
 
     toggleSliceMode() {

@@ -8,6 +8,7 @@ import { Renderer } from './renderer.js';
 import { CameraController } from './camera.js';
 import { UIController } from './ui.js';
 import { RuleEditor } from './ruleEditor.js';
+import { AudioController } from './audio.js';
 
 class GameOfLife3D {
     constructor() {
@@ -42,6 +43,9 @@ class GameOfLife3D {
         this.renderer.setCamera(this.cameraController.getCamera());
         this.updateCameraTarget();
 
+        // Initialize audio (defaults to muted)
+        this.audio = new AudioController();
+
         // Initialize UI
         this.ui = new UIController({
             onSpeedChange: (speed) => this.setSpeed(speed),
@@ -74,7 +78,8 @@ class GameOfLife3D {
             onSliceThicknessChange: (thickness) => {
                 this.renderer.setSliceThickness(thickness);
                 this.needsRenderUpdate = true;
-            }
+            },
+            onSoundChange: (enabled) => this.audio.setMuted(!enabled)
         });
 
         // Initialize Rule Editor
@@ -106,6 +111,7 @@ class GameOfLife3D {
         const stepInterval = 1000 / this.stepsPerSecond;
         if (!this.paused && now - this.lastStepTime >= stepInterval) {
             this.simulation.step();
+            this.audio.tick();
             this.needsRenderUpdate = true;
             this.lastStepTime = now;
         }

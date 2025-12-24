@@ -32,6 +32,7 @@ Open `unity3d/` folder in Unity Editor (2022.1.0f1+) and run the `GameOfLife.uni
 │   │   ├── renderer.js     # Babylon.js thin instances
 │   │   ├── camera.js       # ArcRotateCamera + auto-orbit
 │   │   ├── ui.js           # Control panel, keyboard shortcuts
+│   │   ├── audio.js        # Web Audio API tick sounds
 │   │   └── ruleEditor.js   # Visual rule editor with 2D preview
 │   └── rules/              # Rule presets (JSON)
 ├── Program.cs              # .NET static file server
@@ -94,6 +95,7 @@ Load via `RuleEngine.loadPreset(name)` or `RuleEngine.loadCustom(json)`.
 | Space | Pause/resume |
 | R | Reset simulation |
 | O | Toggle auto-orbit |
+| M | Toggle sound (muted by default) |
 | A/D | Rotate camera |
 | W/S | Zoom in/out |
 
