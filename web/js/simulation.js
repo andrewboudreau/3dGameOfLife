@@ -127,6 +127,8 @@ export class SimulationGrid {
                 this.growthState = -1; // Decay phase
             } else if (this.totalCount < this.growthLowerLimit) {
                 this.growthState = 1;  // Growth phase
+            } else {
+                this.growthState = 0;  // Stable phase
             }
         }
 

@@ -66,7 +66,10 @@ Available as the "Adaptive" preset. Uses state-dependent survival/birth threshol
 | Decay (-1) | 7-13 neighbors | 12+ neighbors |
 | Stable (0) | 4-14 neighbors | 11+ neighbors |
 
-State transitions: Growth → Decay when population > `gridSize/300`, Decay → Growth when < `gridSize/2000`.
+State transitions based on population relative to visible grid volume:
+- **Decay**: population > `visibleVolume/300`
+- **Growth**: population < `visibleVolume/2000`
+- **Stable**: population between these thresholds
 
 ### Pluggable Rules (WebGL)
 
